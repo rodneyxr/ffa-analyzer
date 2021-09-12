@@ -23,22 +23,22 @@ dependencies {
     implementation("log4j:log4j:1.2.14")
 
     // https://github.com/rodneyxr/ffa-framework
-    implementation("com.github.rodneyxr:ffa-framework:gradle-SNAPSHOT")
+    implementation("com.github.rodneyxr:ffa-framework:main-SNAPSHOT")
     // https://github.com/rodneyxr/ffa-grammar
-    implementation("com.github.rodneyxr:ffa-grammar:gradle-SNAPSHOT")
+    implementation("com.github.rodneyxr:ffa-grammar:main-SNAPSHOT")
     // https://github.com/rodneyxr/brics-automaton
-    implementation("com.github.rodneyxr:brics-automaton:gradle-SNAPSHOT")
+    implementation("com.github.rodneyxr:brics-automaton:main-SNAPSHOT")
     // https://github.com/rodneyxr/brics-jsa
-    implementation("com.github.rodneyxr:brics-jsa:gradle-SNAPSHOT")
+    implementation("com.github.rodneyxr:brics-jsa:main-SNAPSHOT")
 
-    testImplementation(kotlin("test"))
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.5.21")
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 

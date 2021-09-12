@@ -22,6 +22,7 @@ fun main(args: Array<String>) {
     val scanPath by parser.option(
         ArgType.String,
         fullName = "file",
+        shortName = "f",
         description = "Input file or directory"
     ).required()
     val preconditionDir by parser.option(
@@ -32,7 +33,12 @@ fun main(args: Array<String>) {
     parser.parse(args)
 
     // Locate files to analyze
-    val files = scanFiles(scanPath)
+    val files: List<File> = try {
+        scanFiles(scanPath)
+    } catch (e: FileNotFoundException) {
+        System.err.println(e.message!!)
+        exitProcess(1)
+    }
 
     // Make sure files were found
     if (files.isEmpty()) {
@@ -75,7 +81,7 @@ fun main(args: Array<String>) {
 fun scanFiles(filepath: String): List<File> {
     val file = File(filepath)
     if (!file.exists())
-        throw FileNotFoundException(file.toString())
+        throw FileNotFoundException("No such file or directory: '$file'")
     val files: MutableList<File> = mutableListOf()
     if (file.isDirectory) {
         file.walk().forEach {

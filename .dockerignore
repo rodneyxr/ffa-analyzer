@@ -1,0 +1,13 @@
+# Ignore everything
+.*
+*
+
+# Except for these directories
+!/src/main
+!/gradle
+
+# Except for these files
+!/build.gradle.kts
+!/gradle.properties
+!/gradlew
+!/settings.gradle.kts
