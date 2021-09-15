@@ -5,6 +5,7 @@ import edu.utsa.fileflow.utilities.GraphvizGenerator
 import fileflow.FFA
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
+import kotlinx.cli.default
 import kotlinx.cli.required
 import java.io.File
 import java.io.FileNotFoundException
@@ -30,6 +31,11 @@ fun main(args: Array<String>) {
         fullName = "precondition",
         description = "Use this directory as the precondition"
     )
+    val resultsDir by parser.option(
+        ArgType.String,
+        fullName = "results",
+        description = "Use this directory to store results (Not yet implemented)",
+    ).default("dot")
     parser.parse(args)
 
     // Locate files to analyze
@@ -50,8 +56,11 @@ fun main(args: Array<String>) {
     println("Files:")
     files.forEach { println("  - $it") }
 
+    // Analyzer each file in the list
     for (f in files) {
-        println(f)
+        println()
+        println("=".repeat(80))
+        println("Analyzing file: $f")
         val saveDir = f.toPath().fileName.toString().replace("\\.ffa$".toRegex(), "")
         try {
             val cfg = FileFlowHelper.generateControlFlowGraphFromFile(f)
@@ -64,11 +73,10 @@ fun main(args: Array<String>) {
                 ffa.run()
             }
             GraphvizGenerator.PATH_PREFIX = ""
-            val timeResults =
-                java.lang.String.format("Variable analysis elapsed time: %dms\n", ffa.variableElapsedTime) +
-                        java.lang.String.format("Grammar analysis elapsed time: %dms\n", ffa.grammarElapsedTime) +
-                        java.lang.String.format("FFA first run elapsed time: %dms\n", ffa.ffaElapsedTime1) +
-                        java.lang.String.format("FFA second run elapsed time: %dms\n", ffa.ffaElapsedTime2)
+            val timeResults = "Variable analysis elapsed time: ${ffa.variableElapsedTime}ms\n" +
+                    "Grammar analysis elapsed time: ${ffa.grammarElapsedTime}ms\n" +
+                    "FFA first run elapsed time: ${ffa.ffaElapsedTime1}ms\n" +
+                    "FFA second run elapsed time: ${ffa.ffaElapsedTime2}ms\n"
             Files.write(Paths.get("dot", saveDir, "time.txt"), timeResults.toByteArray())
             if (DEBUG) println(timeResults)
         } catch (e: Exception) {
